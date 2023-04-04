@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <div class="container-fluid">
+          <ul class="navbar-nav me-auto" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gestionar Usuarios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Telegram Bot</a>
+            </li>
+          </ul>
+        </div>  
+    </nav>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="container">
+            <div class="row">
+                <div class="col">  
+                    <div>
+                        <a>Agregar usuario:</a>
+                        <input class="form-control" style="width: 200px;" type="text" placeholder="@Usuario" id="user">
+                        <button class="btn btn-primary" style="width: 200px;" onclick="event.preventDefault(); addUserName()">AGREGAR</button>
+                    </div>
+                </div>
+                <div class="col">
+                    <div style="margin-left: 30%;">
+                        <a>Eliminar usuario:</a>
+                        <input class="form-control" style="width: 200px;" type="text" placeholder="@Usuario" id="deleteUser">
+                        <button class="btn btn-primary" style="width: 200px;" onclick="event.preventDefault();deleteUsername()">ELIMINAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3 style="text-align: center;">Lista de Usuarios</h3>
+        <div id="usernameList" style="margin-left: 35%; width: 200px; height: 250px; border: 1px solid rgb(154, 154, 154); overflow-y: scroll; background-color: rgb(255, 255, 255); color: black;">
+        </div>
+    </div>
+</div>
+<div class="tab-content">
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <div style="margin-top: 10px; margin-left: 32%; ">
+            <input type="text" name="" id="channel" placeholder="Please insert channel id" class="form-control" style="width: 300px;">
+            <br>
+            <button class="btn btn-primary" onclick="sendTelegramMessage()" id="startBot" style="width: 300px;">START BOT</button>
+        </div>
+        <label style="margin-left: 7%;" for="startBot">Haga click en "START BOT" para empezar a recibir mensajes en su canal de Telegram
+        Para pausar el bot, debe reiniciar la aplicación</label>
+        <br><br>
+        <label for="" style="margin-left: 6%; font-weight: bold;">Asegurese de agregar todos los usuarios antes de iniciar el bot. De lo contrario, deberá reiniciarlo</label>
+    </div>
+</div>
+    
+    <div class="position-fixed bottom-0 end-0 p-3">
+        <div id="connect" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="me-auto" id="toasthead">New Notification!</strong>
+            <small>1 second ago</small>
+            <button type="button" class="btn-close ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close">
+              <span aria-hidden="true"></span>
+            </button>
+            </div>
+            <div class="toast-body"></div>
+        </div>
+    </div>
+</body>
+
+<script>
+const {ipcRenderer} = require('electron')
+function addUserName(){
+    let data = document.getElementById('user').value
+    ipcRenderer.send('username', data)
+}
+
+function deleteUsername(){
+    let data = document.getElementById('deleteUser').value
+    console.log(data)
+    ipcRenderer.send('deleteUsername', data)
+}
+
+ipcRenderer.on('prop', (e,data) =>{
+    let toaster = document.getElementById('connect')
+    toaster.querySelector('.toast-body').innerHTML = `El usuario es invalido, recuerde agregar el @ antes del nombre de usuario, ejemplo: @usuario`
+    let newToast = new bootstrap.Toast(toaster)
+    newToast.show()
+})
+
+setTimeout(addBoxList, 2000);
+
+function addBoxList(){
+    let el = document.getElementById("usernameList")
+    let br = document.createElement("br")
+    const users = require('../username.json')
+    for(i=0; i < users.length; i++){
+        el.innerHTML += users[i]
+        el.appendChild(br)
+    }
+}
+
+ipcRenderer.on("usernameList", (e,data) =>{
+    addBoxList()
+})
+
+function sendTelegramMessage(){
+    document.querySelector("#startBot").disabled = true
+    let channelId = document.getElementById("channel").value
+    ipcRenderer.send('sendMessage', channelId)
+}
+</script>
+
+
+<script>
+const tabContainer = document.getElementById('myTab');
+tabContainer.addEventListener('click', (event) => {
+  if (event.target.getAttribute('data-toggle') === 'tab') {
+    const targetTab = event.target.getAttribute('href');
+    document.querySelectorAll('.tab-pane').forEach((tab) => {
+      if (tab.id === targetTab.slice(1)) {
+        tab.classList.add('show', 'active');
+      } else {
+        tab.classList.remove('show', 'active');
+      }
+    });
+    document.querySelectorAll('.nav-link').forEach((link) => {
+      if (link === event.target) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+}); 
+</script>
+</html>
