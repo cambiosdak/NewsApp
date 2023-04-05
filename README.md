@@ -18,5 +18,6 @@ after dependecies are installed, run ```npm run start```
 - Simple UI using electron app
 
 # Examples
-![UI](https://github.com/cambiosdak/NewsApp/blob/main/examples/Screenshot%202023-04-04%20000425.png)
-![](https://github.com/cambiosdak/NewsApp/blob/main/examples/Screenshot%202023-04-04%20000431.png)
+![UI](https://github.com/cambiosdak/NewsApp/blob/main/examples/Screenshot%202023-04-04%20000425.png)<br />
+![](https://github.com/cambiosdak/NewsApp/blob/main/examples/Screenshot%202023-04-04%20000431.png)<br />
+![](https://github.com/cambiosdak/NewsApp/blob/main/examples/Screenshot%202023-04-04%20225728.png)
