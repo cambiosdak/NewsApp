@@ -3,10 +3,10 @@ const path = require('path')
 const axios = require('axios')
 const fs = require('fs')
 const {Telegraf} = require('telegraf')
-let channel // -1001950929431
+let channel //
 const DomParser = require('dom-parser');
 const parser = new DomParser();
-const bot = new Telegraf('5819320900:AAFsFJggzc8edphXHi7eAcWTSjssi8rZ6WU')
+const bot = new Telegraf('YOUR TOKEN GOES HERE')
 if (process.env.NODE_ENV !== 'production'){
   require('electron-reload')(__dirname, {
 
